@@ -1,0 +1,74 @@
+; Adapted from http://www.linuxcnc.org/index.php/english/forum/10-advanced-configuration/5596-manual-tool-change--tool-lengh-touch-off?start=30#48235
+; Subroutine for probing the tool length offset of the active tool
+; If no active tool is set, this calls the custom M911 command to load the persisted tool from a file (if any)
+
+O<tool_z_offset> sub
+
+#<_3DProbeTool> = 99 ; Number of the probe tool, which bypasses this procedure
+#<_ProbeX> = 1 ; x position of tool setter (machine coordinates)
+#<_ProbeY> = 1 ; y position of tool setter (machine coordinates)
+
+#<_ProbeSafeZ> = -100.0 ; Machine coordinate for a safe height above the tool setter, leaving space for even the longest tool
+#<_ProbeTargetZ> = -150.0 ; Machine coordinate of the lowest Z coordinate we'll probe to.
+#<_ProbeRetract> = 3 ; Retract up this much after the initial probe to release the switch
+
+#<_InitialSpeed> = 1000.0 ; feedrate for moving down to ProbeSafeZ
+#<_FirstProbeSpeed> = 500.0 ; feedrate for initial probe
+#<_SecondProbeSpeed> = 200 ; feedrate for final probe
+
+; Don't run this custom code in simulation mode on startup
+O100 IF [ #<_task> EQ 0]
+  O100 return [0]
+O100 ENDIF
+
+; If no tool is loaded, load the persistent one (this happens on startup)
+; If it's still 0 after that, it means that there really is no tool
+O101 IF [ #<_current_tool> EQ 0]
+    M911
+O101 ENDIF
+
+O102 IF [ #<_current_tool> EQ 0]
+    (MSG, no tool loaded)
+    O102 return [0]
+O102 ENDIF
+
+; Never set an offset for the 3d probe
+O103 IF [ #<_current_tool> EQ #<_3DProbeTool>]
+    O103 return [0]
+O103 ENDIF
+
+M70 ; Save current modal state (mostly for spindle state and speed)
+M5 ; turn off spindle
+G49 ; clear tool length compensation
+G90 ; absolute positioning
+
+; Move above the tool setter
+G53 G0 Z0 ; move safe z
+G53 G0 X[#<_ProbeX>] Y[#<_ProbeY>]
+
+; Move down to a safe point closer to the tool setter
+G53 G1 F[#<_InitialSpeed>] Z[#<_ProbeSafeZ>]
+
+; The probing command cannot be used in machine coordinates, we have to use a work coordinate system
+; However, using relative positioning, we can do the move required without changing anything in any coordinate system
+G91 ; Set relative positioning in the active WCS
+
+; Now do the actual probe - G38.2 - move toward target, stop on contact
+G38.2 Z[#<_ProbeTargetZ> - #<_ProbeSafeZ>] F[#<_FirstProbeSpeed>] ; first probe at faster speed
+G0 Z[#<_ProbeRetract>] ; Move back to release switch
+G38.2 Z[#<_ProbeRetract>*-1.25] F[#<_SecondProbeSpeed>] ; second probe at a slower speed
+
+G90 ; back to absolute positioning
+
+; Update the tool length offset
+G10 L1 P[#<_current_tool>] Z[#<_abs_z>]
+
+; Move to a safe z, then back to where the tool change started
+G53 G0 Z0 ; move safe z
+
+M72 ; restore modal state (this will turn the spindle back on if it was on before the tool change)
+
+; Turn on tool length compensation - has to happen after modal state is restored
+G43
+
+O<tool_z_offset> endsub

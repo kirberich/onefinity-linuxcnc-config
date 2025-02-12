@@ -1,0 +1,22 @@
+; Imperial standard
+T1  P1  Z0          D1.588   ;1/16" end mill
+T2  P2  Z-148.333   D3.175   ;1/8" end mill
+T3  P3  Z-129.713   D6.35    ;1/4" single-flute compression bit
+T4  P4  Z-0         D6.35    ;Standard 1/4" endmill
+T5  P5  D1  ;some other imperial endmill
+
+; Metric standard
+T6  P6  Z0  D6  ;6mm endmill
+T7  P7  Z0  D6  ;6mm ball-end endmill
+T8  P8  Z0  D8  ;8mm endmill
+T9  P9  ;added 20220921
+
+; Coving
+T10  P10  D12.7  ;half inch cove bit
+T11  P11  D19.05  ;three-quarter inch cove bit
+
+; Utility bits
+T50 P50 D0 ; surfacing bit
+
+; Probe
+T99 P99 D0; 3d Probe

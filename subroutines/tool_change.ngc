@@ -1,0 +1,49 @@
+; Adapted from http://www.linuxcnc.org/index.php/english/forum/10-advanced-configuration/5596-manual-tool-change--tool-lengh-touch-off?start=30#48235
+; Subroutine for managing manual tool changes
+; NOTE: this makes heavy use of custom python subroutines, see onefinity.ini and the python directory
+
+; - First moves to a specified toolchange location (hardcoded to X600 Y0 here)
+; - Then triggers a tool length offset probe (M939)
+; - Persists the new tool in a file (M910)
+; - Moves back to the original X/Y position
+
+O<tool_change> sub
+
+; Remember original position so we can jog back to it
+#<_OriginalX> = #<_abs_x>
+#<_OriginalY> = #<_abs_y>
+
+; Don't run this custom code in simulation mode on startup
+O100 IF [ #<_task> EQ 0]
+  O100 return [0]
+O100 ENDIF
+
+; Simply run the usual M6 behaviour if the new tool is already loaded
+O101 IF [  #<tool_in_spindle> EQ #<selected_tool> ]
+    M6
+    O101 return [0]
+O101 ENDIF
+
+G90 ; absolute positioning
+G53 G0 Z0 ; move to safe z
+G53 G0 X600 Y0  ; move to toolchange position
+
+M6 ; Run the original toolchange logic
+M70 ; Save current modal state (mostly for spindle state and speed)
+M5 ; turn off spindle
+
+M939 ; Probe tool z offset
+
+; Persist the newly selected tool using a custom command
+M910
+
+; Move to a safe z, then back to where the tool change started
+G53 G0 Z0 ; move safe z
+G53 G0 X[#<_OriginalX>] Y[#<_OriginalY>]
+
+M72 ; restore modal state (this will turn the spindle back on if it was on before the tool change)
+
+; Turn on tool length compensation - has to happen after modal state is restored
+G43
+
+O<tool_change> endsub
