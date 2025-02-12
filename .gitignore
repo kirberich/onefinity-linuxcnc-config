@@ -1,0 +1,10 @@
+._.DS_Store
+.DS_Store
+/autosave.halscope
+/ferror.halscope
+/halshow.preferences
+/linuxcnc-loaded-tool.txt
+/linuxcnc.var
+/linuxcnc.var.bak
+/tool.tbl.bak
+__pycache__
