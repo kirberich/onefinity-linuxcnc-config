@@ -1,22 +1,13 @@
-; Imperial standard
-T1  P1  Z0          D1.588   ;1/16" end mill
-T2  P2  Z-148.333   D3.175   ;1/8" end mill
-T3  P3  Z-129.713   D6.35    ;1/4" single-flute compression bit
-T4  P4  Z-0         D6.35    ;Standard 1/4" endmill
-T5  P5  D1  ;some other imperial endmill
-
-; Metric standard
-T6  P6  Z0  D6  ;6mm endmill
-T7  P7  Z0  D6  ;6mm ball-end endmill
-T8  P8  Z0  D8  ;8mm endmill
-T9  P9  ;added 20220921
-
-; Coving
-T10  P10  D12.7  ;half inch cove bit
-T11  P11  D19.05  ;three-quarter inch cove bit
-
-; Utility bits
-T50 P50 D0 ; surfacing bit
-
-; Probe
-T99 P99 D0; 3d Probe
+T1   P1   D+1.588000 Z-148.275000 ;1/16" end mill
+T2   P2   D+3.175000 Z-148.333000 ;1/8" end mill
+T3   P3   D+6.350000 Z-135.660000 ;1/4" single-flute compression bit
+T4   P4   D+6.350000 ;standard 1/4" endmill
+T5   P5   D+1.000000 ;some other imperial endmill
+T6   P6   D+6.000000 Z-139.419917 ;6mm endmill
+T7   P7   D+6.000000 Z-139.436583 ;6mm ball-end endmill
+T8   P8   D+8.000000 ;8mm endmill
+T9   P9   D+3.500000 Z-148.289917 ;3.5mm straight EM
+T10  P10  D+12.700000 Z-148.311583 ;half inch cove bit
+T11  P11  D+19.050000 ;three-quarter inch cove bit
+T50  P50  ;surfacing bit
+T99  P99  ;3d probe
