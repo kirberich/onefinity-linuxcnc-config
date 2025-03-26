@@ -1,5 +1,15 @@
 o<on_abort> sub
 
+
+G17 (select XY plane)
+G90 (absolute)
+G94 (feed mode: units/minute)
+M48 (set feed and speed overrides)
+G40 (cutter compensation off)
+M5  (spindle off)
+G80 (cancel modal motion)
+M9  (mist and coolant off)
+
 o100 if [#1 eq 5]
     (machine on)
 o100 elseif [#1 eq 6]
