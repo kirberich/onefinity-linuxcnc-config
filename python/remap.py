@@ -15,7 +15,7 @@ def _lineno():
     return inspect.currentframe().f_back.f_lineno  # type: ignore
 
 
-COORDINATE_SYSTEMS = [{"name": "Shelves", "x": 1039.758, "y": 292.721, "z": -112.744}]
+COORDINATE_SYSTEMS = [{"name": "Shelves", "x": 1039.758, "y": 193.547, "z": 17.8}]
 
 
 def sync_interpreter(self):
