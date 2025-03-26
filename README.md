@@ -1,4 +1,4 @@
-# LinuxCNC configuration for a Onefinity Elite Woodworker using a FlexiHAL card
+# LinuxCNC configuration for a Onefinity Elite Foreman using a FlexiHAL card
 
 ⚠️ This is the actual specific configuration for my machine - it might be useful for adapting for other machines, but there is a lot of custom and highly specific stuff in here, don't expect anything here to be safe for use on your machine!
 
