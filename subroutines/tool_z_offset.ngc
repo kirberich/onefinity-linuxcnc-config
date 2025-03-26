@@ -38,6 +38,7 @@ O103 IF [ #<_current_tool> EQ #<_3DProbeTool>]
 O103 ENDIF
 
 M70 ; Save current modal state (mostly for spindle state and speed)
+M49 ; Disble feed override
 M5 ; turn off spindle
 G49 ; clear tool length compensation
 G90 ; absolute positioning
