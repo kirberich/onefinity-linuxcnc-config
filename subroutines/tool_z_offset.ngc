@@ -9,7 +9,7 @@ O<tool_z_offset> sub
 #<_ProbeY> = 1 ; y position of tool setter (machine coordinates)
 
 #<_ProbeSafeZ> = -100.0 ; Machine coordinate for a safe height above the tool setter, leaving space for even the longest tool
-#<_ProbeTargetZ> = -150.0 ; Machine coordinate of the lowest Z coordinate we'll probe to.
+#<_ProbeTargetZ> = -155.0 ; Machine coordinate of the lowest Z coordinate we'll probe to.
 #<_ProbeRetract> = 3 ; Retract up this much after the initial probe to release the switch
 
 #<_InitialSpeed> = 1000.0 ; feedrate for moving down to ProbeSafeZ
