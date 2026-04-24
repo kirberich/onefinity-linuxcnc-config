@@ -9,7 +9,7 @@ O<tool_z_offset> sub
 #<_ProbeY> = 1 ; y position of tool setter (machine coordinates)
 
 #<_ProbeSafeZ> = -100.0 ; Machine coordinate for a safe height above the tool setter, leaving space for even the longest tool
-#<_ProbeTargetZ> = -155.0 ; Machine coordinate of the lowest Z coordinate we'll probe to.
+#<_ProbeTargetZ> = -150.0 ; Machine coordinate of the lowest Z coordinate we'll probe to.
 #<_ProbeRetract> = 3 ; Retract up this much after the initial probe to release the switch
 
 #<_InitialSpeed> = 1000.0 ; feedrate for moving down to ProbeSafeZ
@@ -38,7 +38,6 @@ O103 IF [ #<_current_tool> EQ #<_3DProbeTool>]
 O103 ENDIF
 
 M70 ; Save current modal state (mostly for spindle state and speed)
-M49 ; Disble feed override
 M5 ; turn off spindle
 G49 ; clear tool length compensation
 G90 ; absolute positioning
@@ -46,6 +45,8 @@ G90 ; absolute positioning
 ; Move above the tool setter
 G53 G0 Z0 ; move safe z
 G53 G0 X[#<_ProbeX>] Y[#<_ProbeY>]
+
+M990 ; force task_plan_sync — works around motion.in-position occasionally getting stuck low between these G53 moves
 
 ; Move down to a safe point closer to the tool setter
 G53 G1 F[#<_InitialSpeed>] Z[#<_ProbeSafeZ>]
