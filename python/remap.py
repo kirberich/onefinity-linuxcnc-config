@@ -15,12 +15,11 @@ def _lineno():
     return inspect.currentframe().f_back.f_lineno  # type: ignore
 
 
-COORDINATE_SYSTEMS = [{"name": "Shelves", "x": 1039.758, "y": 193.547, "z": 17.8}]
+COORDINATE_SYSTEMS = [{"name": "Shelves", "x": 1039.758, "y": 292.721, "z": -112.744}]
 
 
 def sync_interpreter(self):
-    c = linuxcnc.command()
-    c.task_plan_sync()
+    yield INTERP_EXECUTE_FINISH
 
 
 def change_prolog(self, **words):
