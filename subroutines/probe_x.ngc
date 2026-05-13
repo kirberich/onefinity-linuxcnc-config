@@ -1,0 +1,61 @@
+; Subroutine for probing X=0 in the currently active coordinate system
+; NOTE: probing will not start until the probe is briefly activated, to ensure that it works
+
+o<probe_x> sub
+
+#<BlockWidth> = 63.52 ; Width of the probe block
+
+; Save modal state
+M70
+
+; Cancel X offset
+G92.1 ; Will clear G92 offsets, but that's fine
+G91 ; Relative motion
+; Force LinuxCNC to refresh hal pin states prior to reading HAL pin
+M66 E0 L0
+; Check if probe is already tripped
+O10 if [#<_hal[motion.probe-input]> EQ 1]
+(msg,Probe already tripped)
+M72
+O10 return [-1]
+O10 endif
+
+; For safety, wait for the user to touch the probe by hand
+M66 P0 L3 Q60 ; wait up to 60 seconds for digital input 0 to turn on
+
+O30 if [#5399 EQ -1]
+(msg,No contact made with probe)
+M72
+O30 return [-1]
+O30 endif
+
+; Now wait for the probe to deactivate again, then wait another fraction of a second for good measure
+M66 P0 L4 Q5 (wait up to 5 seconds for digital input 0 to turn off again)
+
+O31 if [#5399 EQ -1]
+(msg,Contact held too long)
+M72
+O31 return [-1]
+O31 endif
+
+G4 P0.2
+
+G38.2 X50 F300 (probe right using fast feedrate)
+G0 X-2 (move left by 2mm)
+; Allow a moment for the probe input to clear
+G4 P0.1
+; Force LinuxCNC to refresh hal pin states prior to reading HAL pin
+M66 E0 L0
+; Check if probe is already tripped
+O21 if [#<_hal[motion.probe-input]> EQ 1]
+(msg,Probe already tripped)
+M72
+O21 return [-1]
+O21 endif
+G38.2 X2.1 F100 (probe right using slow feedrate to get better accuracy)
+
+G10 L20 P0 X[-#<BlockWidth>] (set current WCS X value to block width)
+G0 X[-50] (move left, X should be -(50 + block width) after this point)
+
+M72 ; restore modal state
+o<probe_x> endsub
