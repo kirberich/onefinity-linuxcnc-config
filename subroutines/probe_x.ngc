@@ -58,4 +58,8 @@ G10 L20 P0 X[-#<BlockWidth>] (set current WCS X value to block width)
 G0 X[-50] (move left, X should be -50 + block width after this point)
 
 M72 ; restore modal state
+
+; Force AXIS to re-read the new WCS offset
+M940
+
 o<probe_x> endsub

@@ -58,4 +58,8 @@ G10 L20 P0 Y[#<BlockDepth>] (set current WCS Y value to block depth)
 G0 Y50 (move back, Y should be 50 + block depth after this point)
 
 M72 ; restore modal state
+
+; Force AXIS to re-read the new WCS offset
+M940
+
 o<probe_y> endsub

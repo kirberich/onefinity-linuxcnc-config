@@ -5,10 +5,11 @@ Note: as far as I can tell, this file has to be called remap.
 """
 
 import inspect
+import subprocess
 
-from interpreter import INTERP_OK, INTERP_EXECUTE_FINISH  # type: ignore
-import linuxcnc  # type: ignore
 import emccanon  # type: ignore
+import linuxcnc  # type: ignore
+from interpreter import INTERP_EXECUTE_FINISH, INTERP_OK  # type: ignore
 
 
 def _lineno():
@@ -20,6 +21,16 @@ COORDINATE_SYSTEMS = [{"name": "Shelves", "x": 1039.758, "y": 292.721, "z": -112
 
 def sync_interpreter(self):
     yield INTERP_EXECUTE_FINISH
+
+
+def reload_display(self):
+    """Force AXIS to reload the current file.
+
+    Coordinate system offsets changed by a running program aren't reflexed in axis automatically,
+    so this makes axis reload the file to make sure the offsets are displayed consistently.
+    """
+    yield INTERP_EXECUTE_FINISH
+    subprocess.call(["axis-remote", "--reload"])
 
 
 def change_prolog(self, **words):

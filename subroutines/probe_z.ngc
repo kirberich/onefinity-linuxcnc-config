@@ -41,4 +41,8 @@ G10 L20 P0 Z[#<_BlockThickness>] (set current WCS Z value to block thickness)
 G91 G0 Z[45 - #<_BlockThickness>] (move up - Z should be 45 after this point)
 
 M72 ; restore modal state
+
+; Force AXIS to re-read the new WCS offset
+M940
+
 o<probe_z> endsub
